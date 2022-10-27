@@ -1,0 +1,4 @@
+include LICENSE
+include README.rst
+recursive-include palette/static *
+recursive-include palette/templates *

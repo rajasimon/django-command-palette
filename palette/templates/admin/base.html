@@ -1,0 +1,18 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+
+{% block extrastyle %}{{ block.super }}
+<style>
+:root {
+  --primary: #9774d5;
+  --secondary: #785cab;
+  --link-fg: #7c449b;
+  --link-selected-fg: #8f5bb2;
+}
+</style>
+{% endblock %}
+
+
+{% block extrahead %}
+<script src="{% static 'admin/palette.js' %}"></script>
+{% endblock %}
