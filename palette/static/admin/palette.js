@@ -1,4 +1,3 @@
-window.buttonData = [];
 window.paletteComponent = document.createElement("div");
 window.paletteComponent.classList.add("palette");
 
@@ -6,27 +5,77 @@ const paletteDatas = JSON.parse(
   document.getElementById("palette-data").textContent
 );
 
-function searchButton(query) {
-  let searchedElements = [];
-  window.buttonData.find((value, index) => {
-    const thisButton = window.buttonData[index];
-    if (thisButton.text.includes(query)) {
-      const element = createButton(value);
-      searchedElements.push(element);
+function searchQuery(query) {
+  if (!query) {
+    showDefaultList();
+    return;
+  }
+
+  let searchedData = [];
+  let firstSearchStateBool = false;
+
+  const resultElement = document.querySelector(".palette-result-window");
+  resultElement.innerHTML = "";
+
+  for (let index = 0; index < paletteDatas.length; index++) {
+    const paletteData = paletteDatas[index];
+    for (let innerIndex = 0; innerIndex < paletteData.length; innerIndex++) {
+      const data = paletteData[innerIndex];
+      const buttonData = {
+        key: `${index}`,
+        text: `${data.name}`,
+        admin_url: `${data.admin_url}`,
+      };
+
+      if (data.name.toLowerCase().includes(query.toLowerCase())) {
+        if (!firstSearchStateBool) {
+          buttonData["default"] = true;
+          firstSearchStateBool = false;
+        }
+        searchedData.push(buttonData);
+        const element = createButton(buttonData);
+        resultElement.appendChild(element);
+      }
     }
-  });
+  }
+}
 
-  const paletteResultWindow = document.querySelector(".palette-result-window");
-  paletteResultWindow.innerHTML = "";
+function enterQuery(query) {
+  let firstSearchStateBool = false;
+  for (let index = 0; index < paletteDatas.length; index++) {
+    const paletteData = paletteDatas[index];
+    for (let innerIndex = 0; innerIndex < paletteData.length; innerIndex++) {
+      const data = paletteData[innerIndex];
+      const buttonData = {
+        key: `${index}`,
+        text: `${data.name}`,
+        admin_url: `${data.admin_url}`,
+      };
 
-  searchedElements.forEach((searchedElement) => {
-    paletteResultWindow.appendChild(searchedElement);
-  });
+      if (!query) {
+        if (!firstSearchStateBool) {
+          firstSearchStateBool = true;
+          window.location.replace(buttonData.admin_url);
+        }
+      } else {
+        if (data.name.toLowerCase().includes(query.toLowerCase())) {
+          if (!firstSearchStateBool) {
+            firstSearchStateBool = true;
+            window.location.replace(buttonData.admin_url);
+          }
+        }
+      }
+    }
+  }
 }
 
 function createButton(data) {
   const buttonElement = document.createElement("div");
   buttonElement.classList.add("palette-button");
+  if (data.default === true) {
+    buttonElement.classList.add("selected");
+  }
+
   buttonElement.addEventListener("click", function () {
     window.location.replace(data.admin_url);
   });
@@ -43,7 +92,10 @@ function createButton(data) {
   return buttonElement;
 }
 
-function showDefaultList(resultElement) {
+function showDefaultList() {
+  const resultElement = document.querySelector(".palette-result-window");
+  resultElement.innerHTML = "";
+
   for (let index = 0; index < paletteDatas.length; index++) {
     const paletteData = paletteDatas[index];
     for (let innerIndex = 0; innerIndex < paletteData.length; innerIndex++) {
@@ -53,9 +105,13 @@ function showDefaultList(resultElement) {
         text: `${data.name}`,
         admin_url: `${data.admin_url}`,
       };
+      if (innerIndex === 0) {
+        buttonData["default"] = true;
+      } else {
+        buttonData["default"] = false;
+      }
       const element = createButton(buttonData);
       resultElement.appendChild(element);
-      window.buttonData.push(buttonData);
     }
   }
 }
@@ -72,8 +128,11 @@ function executePalette() {
   const inputElement = document.createElement("input");
   inputElement.classList.add("palette-input");
   inputElement.placeholder = "Type a command or search...";
-  inputElement.onkeydown = function (event) {
-    searchButton(event.target.value);
+  inputElement.onkeyup = function (event) {
+    if (event.key === "Enter") {
+      enterQuery(event.target.value);
+    }
+    searchQuery(event.target.value);
   };
 
   wrapperElement.appendChild(inputElement);
@@ -81,15 +140,10 @@ function executePalette() {
   const resultElement = document.createElement("div");
   resultElement.classList.add("palette-result-window");
 
-  showDefaultList(resultElement);
-
   wrapperElement.appendChild(resultElement);
-  console.log(document.body);
   document.body.appendChild(window.paletteComponent);
 
-  // Below code is not working as expected. Input is not focusing when open
-  inputElement.setAttribute("tabindex", "1");
-  inputElement.focus();
+  showDefaultList();
 }
 
 document.addEventListener("DOMContentLoaded", executePalette, false);
