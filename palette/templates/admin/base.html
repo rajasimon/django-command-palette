@@ -17,7 +17,8 @@
   width: 100%; 
   inset: 0px; 
   padding: 14vh 16px 16px;
-  background-color: rgba(0,0,0,.2)
+  background-color: rgba(0,0,0,.2);
+  z-index: 25;
 }
 .palette-window {
   opacity: 1; 
@@ -69,6 +70,9 @@
   width: 100%; 
 }
 .palette-button:hover {
+  background-color: var(--palette-gray);
+}
+.palette-button.selected {
   background-color: var(--palette-gray);
 }
 .palette-button-wrapper {
