@@ -126,6 +126,7 @@ function executePalette() {
   palleteWindowElement.appendChild(wrapperElement);
 
   const inputElement = document.createElement("input");
+  inputElement.id = "paletteInput";
   inputElement.classList.add("palette-input");
   inputElement.placeholder = "Type a command or search...";
   inputElement.onkeyup = function (event) {
@@ -148,11 +149,10 @@ function executePalette() {
 
 document.addEventListener("DOMContentLoaded", executePalette, false);
 
-document.addEventListener("keydown", function (event) {
-  if (event.metaKey === true && event.key == "k") {
-    event.preventDefault();
-
+document.addEventListener("keydown", (event) => {
+  if (event.metaKey && event.key === "k") {
     window.paletteComponent.style.display =
       window.paletteComponent.style.display === "flex" ? "none" : "flex";
+    document.getElementById("paletteInput").focus();
   }
 });
