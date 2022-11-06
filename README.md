@@ -1,7 +1,9 @@
 # Django Command Palette
 
-Palette is a Django app to add Command Palette to your Django admin.. This will make it
-easy to navigate the Admin page with Ctrl/Cmd + K,
+Palette is a Django app to add command palette to your Django admin.. This will make it
+easy to navigate the Admin page with Ctrl/Cmd + k
+
+![screenshot](screenshot.png)
 
 ## Quick start
 
@@ -26,3 +28,7 @@ easy to navigate the Admin page with Ctrl/Cmd + K,
 3. Start the development server and visit http://127.0.0.1:8000/admin/
 
 4. Visit http://127.0.0.1:8000/admin and type `Ctrl/Cmd + K`
+
+## Credits
+
+This project is heavily inspired by [kbar](https://github.com/timc1/kbar)
