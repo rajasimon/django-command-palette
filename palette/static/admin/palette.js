@@ -30,7 +30,9 @@ function searchQuery(query) {
       if (data.name.toLowerCase().includes(query.toLowerCase())) {
         if (!firstSearchStateBool) {
           buttonData["default"] = true;
-          firstSearchStateBool = false;
+          firstSearchStateBool = true;
+        } else {
+          buttonData["default"] = false;
         }
         searchedData.push(buttonData);
         const element = createButton(buttonData);
@@ -105,7 +107,7 @@ function showDefaultList() {
         text: `${data.name}`,
         admin_url: `${data.admin_url}`,
       };
-      if (innerIndex === 0) {
+      if (index === 0 && innerIndex === 0) {
         buttonData["default"] = true;
       } else {
         buttonData["default"] = false;
@@ -154,5 +156,10 @@ document.addEventListener("keydown", (event) => {
     window.paletteComponent.style.display =
       window.paletteComponent.style.display === "flex" ? "none" : "flex";
     document.getElementById("paletteInput").focus();
+  }
+
+  if (event.key == "Escape") {
+    window.paletteComponent.style.display =
+      window.paletteComponent.style.display === "flex" ? "none" : "flex";
   }
 });

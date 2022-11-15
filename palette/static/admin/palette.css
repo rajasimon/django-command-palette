@@ -1,0 +1,88 @@
+:root {
+  --palette-background: #FFFFFF;
+  --palette-foreground: #000000;
+  --palette-gray: #efefef;
+  --palette-shadow: '#000'
+}
+.palette {
+  position: fixed;
+  display: none;
+  align-items: flex-start; 
+  justify-content: center; 
+  width: 100%; 
+  inset: 0px; 
+  padding: 14vh 16px 16px;
+  background-color: rgba(0,0,0,.2);
+  z-index: 25;
+}
+.palette-window {
+  opacity: 1; 
+  transform: scale(0.99); 
+  max-width: 600px; 
+  width: 100%; 
+  background: var(--palette-background); 
+  color: var(--palette-foreground); 
+  border-radius: 8px; 
+  overflow: hidden; 
+  box-shadow: var(--palette-shadow); 
+  pointer-events: auto;
+}
+.palette-input {
+  padding: 12px 16px; 
+  font-size: 16px; 
+  width: 100%; 
+  box-sizing: border-box; 
+  outline: none; 
+  border: none; 
+  background: var(--palette-background); 
+  color: var(--palette-foreground);
+}
+.palette-result-window {
+  max-height: 400px; 
+  position: relative; 
+  overflow: auto;
+  height: 478px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.palette-result-window-header {
+  position: absolute; 
+  top: 0px; 
+  left: 0px; 
+  width: 100%; 
+  transform: translateY(0px);
+}
+.palette-result-window-header-text {
+  padding: 8px 16px; 
+  font-size: 10px; 
+  text-transform: uppercase; 
+  opacity: 0.5;
+}
+.palette-button {
+  top: 0px; 
+  left: 0px; 
+  width: 100%; 
+}
+.palette-button:hover {
+  background-color: var(--palette-gray);
+}
+.palette-button.selected {
+  background-color: var(--palette-gray);
+}
+.palette-button-wrapper {
+  padding: 12px 16px; 
+  background: transparent; 
+  border-left: 2px solid transparent; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  cursor: pointer;
+}
+.palette-button-wrapper-text {
+  display: flex; 
+  gap: 8px; 
+  align-items: center; 
+  font-size: 14px;
+  color: black;
+}
