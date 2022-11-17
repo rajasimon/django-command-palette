@@ -5,6 +5,48 @@ const paletteDatas = JSON.parse(
   document.getElementById("palette-data").textContent
 );
 
+const isVisible = (menu, el) => {
+  const menuHeight = menu.offsetHeight;
+  const menuScrollOffset = menu.scrollTop;
+
+  const elemTop = el.offsetTop - menu.offsetTop;
+  const elemBottom = elemTop + el.offsetHeight;
+  return (
+    elemTop >= menuScrollOffset && elemBottom <= menuScrollOffset + menuHeight
+  );
+};
+
+function moveSelected(direction) {
+  const paletteResultWindow = document.querySelector(".palette-result-window");
+  const paletteResultWindowArray = Array.prototype.slice.call(
+    document.querySelector(".palette-result-window").children
+  );
+  const selected = document.querySelector(".palette-button.selected");
+  const position = paletteResultWindowArray.indexOf(selected);
+
+  if (direction === "down" && position + 1 < paletteResultWindowArray.length) {
+    selected.classList.remove("selected");
+    paletteResultWindowArray[position + 1].classList.add("selected");
+    if (
+      !isVisible(paletteResultWindow, paletteResultWindowArray[position + 1])
+    ) {
+      paletteResultWindow.scrollTop =
+        paletteResultWindow.scrollTop + selected.offsetHeight;
+    }
+  }
+
+  if (direction === "up" && position - 1 >= 0) {
+    selected.classList.remove("selected");
+    paletteResultWindowArray[position - 1].classList.add("selected");
+    if (
+      !isVisible(paletteResultWindow, paletteResultWindowArray[position - 1])
+    ) {
+      paletteResultWindow.scrollTop =
+        paletteResultWindow.scrollTop - selected.offsetHeight;
+    }
+  }
+}
+
 function searchQuery(query) {
   if (!query) {
     showDefaultList();
@@ -135,7 +177,9 @@ function executePalette() {
     if (event.key === "Enter") {
       enterQuery(event.target.value);
     }
-    searchQuery(event.target.value);
+    if (!["ArrowDown", "ArrowUp"].includes(event.key)) {
+      searchQuery(event.target.value);
+    }
   };
 
   wrapperElement.appendChild(inputElement);
@@ -161,5 +205,13 @@ document.addEventListener("keydown", (event) => {
   if (event.key == "Escape") {
     window.paletteComponent.style.display =
       window.paletteComponent.style.display === "flex" ? "none" : "flex";
+  }
+
+  if (event.key == "ArrowUp") {
+    moveSelected("up");
+  }
+
+  if (event.key == "ArrowDown") {
+    moveSelected("down");
   }
 });
