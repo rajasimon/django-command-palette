@@ -5,45 +5,40 @@ const paletteDatas = JSON.parse(
   document.getElementById("palette-data").textContent
 );
 
-const isVisible = (menu, el) => {
-  const menuHeight = menu.offsetHeight;
-  const menuScrollOffset = menu.scrollTop;
-
-  const elemTop = el.offsetTop - menu.offsetTop;
-  const elemBottom = elemTop + el.offsetHeight;
-  return (
-    elemTop >= menuScrollOffset && elemBottom <= menuScrollOffset + menuHeight
-  );
-};
+function getUrlFromName(name) {
+  for (let index = 0; index < paletteDatas.length; index++) {
+    const paletteData = paletteDatas[index];
+    for (let innerIndex = 0; innerIndex < paletteData.length; innerIndex++) {
+      const data = paletteData[innerIndex];
+      if (name === data.name) {
+        return data.admin_url
+      }
+    }
+  }
+  console.error(`${name} not found in paletteDatas`);
+}
 
 function moveSelected(direction) {
-  const paletteResultWindow = document.querySelector(".palette-result-window");
   const paletteResultWindowArray = Array.prototype.slice.call(
     document.querySelector(".palette-result-window").children
   );
   const selected = document.querySelector(".palette-button.selected");
   const position = paletteResultWindowArray.indexOf(selected);
 
+  // Scroll down if not already at the end
   if (direction === "down" && position + 1 < paletteResultWindowArray.length) {
     selected.classList.remove("selected");
     paletteResultWindowArray[position + 1].classList.add("selected");
-    if (
-      !isVisible(paletteResultWindow, paletteResultWindowArray[position + 1])
-    ) {
-      paletteResultWindow.scrollTop =
-        paletteResultWindow.scrollTop + selected.offsetHeight;
-    }
+    // Make the sure the new selected element is scrolled into view
+    paletteResultWindowArray[position + 1].scrollIntoView({block: "nearest"});
   }
 
+  // Scroll up if not already at the beginning
   if (direction === "up" && position - 1 >= 0) {
     selected.classList.remove("selected");
     paletteResultWindowArray[position - 1].classList.add("selected");
-    if (
-      !isVisible(paletteResultWindow, paletteResultWindowArray[position - 1])
-    ) {
-      paletteResultWindow.scrollTop =
-        paletteResultWindow.scrollTop - selected.offsetHeight;
-    }
+    // Make the sure the new selected element is scrolled into view
+    paletteResultWindowArray[position - 1].scrollIntoView({block: "nearest"});
   }
 }
 
@@ -82,35 +77,15 @@ function searchQuery(query) {
       }
     }
   }
+
+  // Make the sure the first/selected element is scrolled into view
+  resultElement.firstChild.scrollIntoView({block: "nearest"});
 }
 
-function enterQuery(query) {
-  let firstSearchStateBool = false;
-  for (let index = 0; index < paletteDatas.length; index++) {
-    const paletteData = paletteDatas[index];
-    for (let innerIndex = 0; innerIndex < paletteData.length; innerIndex++) {
-      const data = paletteData[innerIndex];
-      const buttonData = {
-        key: `${index}`,
-        text: `${data.name}`,
-        admin_url: `${data.admin_url}`,
-      };
-
-      if (!query) {
-        if (!firstSearchStateBool) {
-          firstSearchStateBool = true;
-          window.location.replace(buttonData.admin_url);
-        }
-      } else {
-        if (data.name.toLowerCase().includes(query.toLowerCase())) {
-          if (!firstSearchStateBool) {
-            firstSearchStateBool = true;
-            window.location.replace(buttonData.admin_url);
-          }
-        }
-      }
-    }
-  }
+function handleEnter() {
+  const selected = document.querySelector(".palette-button.selected");
+  const url = getUrlFromName(selected.textContent);
+  window.location.replace(url);
 }
 
 function createButton(data) {
@@ -175,7 +150,8 @@ function executePalette() {
   inputElement.placeholder = "Type a command or search...";
   inputElement.onkeyup = function (event) {
     if (event.key === "Enter") {
-      enterQuery(event.target.value);
+      handleEnter();
+      return;
     }
     if (!["ArrowDown", "ArrowUp"].includes(event.key)) {
       searchQuery(event.target.value);
@@ -196,15 +172,19 @@ function executePalette() {
 document.addEventListener("DOMContentLoaded", executePalette, false);
 
 document.addEventListener("keydown", (event) => {
+  const paletteIsVisible = window.paletteComponent.style.display === "flex"
+
   if (event.metaKey && event.key === "k") {
-    window.paletteComponent.style.display =
-      window.paletteComponent.style.display === "flex" ? "none" : "flex";
+    window.paletteComponent.style.display = paletteIsVisible ? "none" : "flex";
     document.getElementById("paletteInput").focus();
   }
 
+  if (!paletteIsVisible) {
+    return;
+  }
+
   if (event.key == "Escape") {
-    window.paletteComponent.style.display =
-      window.paletteComponent.style.display === "flex" ? "none" : "flex";
+    window.paletteComponent.style.display = "none";
   }
 
   if (event.key == "ArrowUp") {
