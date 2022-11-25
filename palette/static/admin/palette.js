@@ -174,7 +174,7 @@ document.addEventListener("DOMContentLoaded", executePalette, false);
 document.addEventListener("keydown", (event) => {
   const paletteIsVisible = window.paletteComponent.style.display === "flex"
 
-  if (event.ctrlKey && event.key === "k") {
+  if ((event.ctrlKey || event.metaKey) && event.key === "k") {
     window.paletteComponent.style.display = paletteIsVisible ? "none" : "flex";
     document.getElementById("paletteInput").focus();
     event.preventDefault();
