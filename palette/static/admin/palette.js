@@ -147,6 +147,10 @@ function executePalette() {
   const inputElement = document.createElement("input");
   inputElement.id = "paletteInput";
   inputElement.classList.add("palette-input");
+  inputElement.setAttribute("type", "text");
+  inputElement.setAttribute("spellcheck", "false");
+  inputElement.setAttribute("autocomplete", "off");
+  inputElement.setAttribute("autocapitalize", "off");
   inputElement.placeholder = "Type a command or search...";
   inputElement.onkeyup = function (event) {
     if (event.key === "Enter") {
